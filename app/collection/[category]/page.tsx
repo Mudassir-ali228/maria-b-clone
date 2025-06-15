@@ -19,23 +19,17 @@ interface StrapiProduct {
   }[]
 }
 
-type PageProps = {
-  params: {
-    category: string
-  }
-}
-
-export default async function ProductsPage({ params }: PageProps) {
+export default async function ProductsPage({ 
+  params 
+}: { 
+  params: Promise<{ category: string }> 
+}) {
   try {
-    const category = (await params).category
-
-    const query = new URLSearchParams({
-      "filters[prod_id][$contains]": category,
-      populate: "Images",
-    })
-
+    // Await the params Promise
+    const resolvedParams = await params
+    
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/products?${query.toString()}`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/products?filters[prod_id][$contains]=${resolvedParams.category}&populate=Images`,
       {
         next: { revalidate: 600 },
       }
