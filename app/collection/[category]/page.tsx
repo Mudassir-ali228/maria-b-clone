@@ -5,24 +5,40 @@ export const revalidate = 600
 
 interface StrapiProduct {
   id: number
-    productName: string
-    slug: string
-    price: number
-    createdAt: string
-    Images?: {
-          url: string
-          formats?: {
-            large?: { url: string }
-            medium?: { url: string }
-            small?: { url: string }
-          }
-      }[]
-  }
+  productName: string
+  slug: string
+  price: number
+  createdAt: string
+  Images?: {
+    url: string
+    formats?: {
+      large?: { url: string }
+      medium?: { url: string }
+      small?: { url: string }
+    }
+  }[]
+}
 
-export default async function ProductsPage({ params }: { params: { category: string } }) {
+export default async function ProductsPage({
+  params,
+}: {
+  params: { category: string }
+}) {
   try {
+    // Destructure safely
+    const { category } = await params
+
+    if (!category) {
+      throw new Error("Category parameter is missing")
+    }
+
+    const query = new URLSearchParams({
+      "filters[prod_id][$contains]": category,
+      populate: "Images",
+    })
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/products?filters[prod_id][$contains]=${params.category}&populate=Images`,
+      `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/products?${query.toString()}`,
       {
         next: { revalidate: 600 },
       }
