@@ -19,18 +19,15 @@ interface StrapiProduct {
   }[]
 }
 
-export default async function ProductsPage({
-  params,
-}: {
-  params: { category: string }
-}) {
-  try {
-    // Destructure safely
-    const { category } = await params
+type PageProps = {
+  params: {
+    category: string
+  }
+}
 
-    if (!category) {
-      throw new Error("Category parameter is missing")
-    }
+export default async function ProductsPage({ params }: PageProps) {
+  try {
+    const category = (await params).category
 
     const query = new URLSearchParams({
       "filters[prod_id][$contains]": category,

@@ -22,8 +22,8 @@ interface Product {
 }
 
 const categories = [
-  { id: "fx", name: "formals", label: "Formals" },
-  { id: "sg", name: "signature", label: "Signature" },
+  { id: "fx", name: "fx", label: "Formals" },
+  { id: "sg", name: "sg", label: "Signature" },
 ]
 
 export default function ProductsPageClient({ products }: { products: Product[] }) {
